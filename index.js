@@ -76,8 +76,8 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
     });
 
     // Write to file
-    fs.writeFile('top-apm-packages.md', table, function(err) {
-      console.log('Successfully stored packages in "top-apm-packages.md"!');
+    fs.writeFile('top-atom-packages.md', table, function(err) {
+      console.log('Successfully stored packages in "top-atom-packages.md"!');
     });
   });
 });
