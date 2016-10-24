@@ -2,7 +2,7 @@
 
 Parse any possible package from [Atom.io](https://atom.io/packages) and sort them based on downloads.
 
-:arrow_right: Checkout [`top-apm-packages.md`](top-apm-packages.md)
+:arrow_right: Checkout [`top-atom-packages.md`](top-atom-packages.md)
 
 ## Installation
 
