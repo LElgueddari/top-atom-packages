@@ -65,7 +65,7 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
 
     // Add position key in each package
     packages.forEach(function(entry, index) {
-      entry['position'] = index + 1;
+      entry.position = '**' + (index + 1) + "**";
     });
 
     // Create markdown table
