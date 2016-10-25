@@ -2,6 +2,7 @@ var request = require('request'),
     cheerio = require('cheerio'),
     async = require('async'),
     fs = require('fs'),
+    numeral = require('numeral'),
     tableify = require('markdown-tableify');
 
 // Configuration
@@ -39,7 +40,7 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
             description: $(this).find('.card-description').text().trim(),
             author: $(this).find('.author').text().trim(),
             authorLink: $(this).find('.author').attr('href'),
-            authorLinkDOM: '[<img src="' + $(this).find('.gravatar').attr('src') + '" data-canonical-src="' + $(this).find('.gravatar').attr('src') + '" width="25" height="25" /> ' + $(this).find('.author').text().trim() + '](' + $(this).find('.author').attr('href') + ')',
+            authorLinkDOM: '[<img src="' + $(this).find('.gravatar').attr('src') + '" data-canonical-src="' + $(this).find('.gravatar').attr('src') + '" width="25" height="25" /> ' + $(this).find('.author').text().trim() + '](https://atom.io' + $(this).find('.author').attr('href') + ')',
             downloads: $(this).find('.stat[aria-label="Downloads"] .value').text().trim().replace(/,/g, ''),
             stars: $(this).find('.star-box .social-count').text().trim().replace(/,/g, '')
           };
@@ -63,9 +64,13 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
         return b[sortKey] - a[sortKey];
     });
 
-    // Add position key in each package
+    // Post-process values
     packages.forEach(function(entry, index) {
+      // Add bold position key
       entry.position = '**' + (index + 1) + "**";
+      // Format numbers and add decimal grouping
+      entry.downloads = numeral(entry.downloads).format('0,0');
+      entry.stars = numeral(entry.stars).format('0,0');
     });
 
     // Create markdown table
