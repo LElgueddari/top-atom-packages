@@ -63,9 +63,18 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
         return b[sortKey] - a[sortKey];
     });
 
+    // Add position key in each package
+    packages.forEach(function(entry, index) {
+      entry['position'] = index + 1;
+    });
+
     // Create markdown table
     var table = tableify(packages, {
       headers: [{
+        name: 'position',
+        align: ':---:',
+        title: '#'
+      }, {
         name: 'nameLinkDOM',
         align: ':---',
         title: 'Package Name'
