@@ -2,6 +2,7 @@ var request = require('request'),
     cheerio = require('cheerio'),
     async = require('async'),
     fs = require('fs'),
+    numeral = require('numeral'),
     tableify = require('markdown-tableify');
 
 // Configuration
@@ -63,9 +64,13 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
         return b[sortKey] - a[sortKey];
     });
 
-    // Add position key in each package
+    // Post-process values
     packages.forEach(function(entry, index) {
+      // Add bold position key
       entry.position = '**' + (index + 1) + "**";
+      // Format numbers and add decimal grouping
+      entry.downloads = numeral(entry.downloads).format('0,0');
+      entry.stars = numeral(entry.stars).format('0,0');
     });
 
     // Create markdown table
