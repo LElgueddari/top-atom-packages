@@ -39,7 +39,7 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
             description: $(this).find('.card-description').text().trim(),
             author: $(this).find('.author').text().trim(),
             authorLink: $(this).find('.author').attr('href'),
-            authorLinkDOM: '[<img src="' + $(this).find('.gravatar').attr('src') + '" data-canonical-src="' + $(this).find('.gravatar').attr('src') + '" width="25" height="25" /> ' + $(this).find('.author').text().trim() + '](' + $(this).find('.author').attr('href') + ')',
+            authorLinkDOM: '[<img src="' + $(this).find('.gravatar').attr('src') + '" data-canonical-src="' + $(this).find('.gravatar').attr('src') + '" width="25" height="25" /> ' + $(this).find('.author').text().trim() + '](https://atom.io' + $(this).find('.author').attr('href') + ')',
             downloads: $(this).find('.stat[aria-label="Downloads"] .value').text().trim().replace(/,/g, ''),
             stars: $(this).find('.star-box .social-count').text().trim().replace(/,/g, '')
           };
