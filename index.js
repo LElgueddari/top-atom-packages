@@ -1,16 +1,20 @@
-var request = require('request');
-var cheerio = require('cheerio');
-var async = require('async');
-var fs = require('fs');
-var tableify = require('markdown-tableify');
+var request = require('request'),
+    cheerio = require('cheerio'),
+    async = require('async'),
+    fs = require('fs'),
+    tableify = require('markdown-tableify');
 
+// Configuration
+var sortKey = "downloads";
+
+// Parse possible pagination ranges
 request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', function (error, response, html) {
   var $ = cheerio.load(html);
   var $paginationLinks = $('.pagination a');
-  var sortKey = "downloads";
   var currentPage = 1,
       lastPage = $($paginationLinks[$paginationLinks.length - 2]).text();
 
+  // Empty array to store parsed packages
   var packages = [];
 
   // Iterate through each available result page
@@ -18,7 +22,7 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
     return currentPage <= lastPage;
   },
   function (next) {
-    // Scrape content of page
+    // Scrape content of "new" page
     request('https://atom.io/packages/list?direction=desc&page=' + currentPage + '&sort=stars', function (error, response, body) {
       console.log('Scraping results page ' + currentPage + '...');
 
@@ -45,11 +49,13 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
         });
       }
 
+      // Increment current page
       currentPage++;
       next();
     });
   },
   function (err) {
+    // Once the iteration is complete...
     console.log('Finished scraping');
 
     // Sort descending based on 'sortKey'
@@ -57,6 +63,7 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
         return b[sortKey] - a[sortKey];
     });
 
+    // Create markdown table
     var table = tableify(packages, {
       headers: [{
         name: 'nameLinkDOM',
@@ -75,7 +82,7 @@ request('https://atom.io/packages/list?direction=desc&page=1&sort=stars', functi
       }]
     });
 
-    // Write to file
+    // And write the constructed Markdown to file
     fs.writeFile('top-atom-packages.md', table, function(err) {
       console.log('Successfully stored packages in "top-atom-packages.md"!');
     });
